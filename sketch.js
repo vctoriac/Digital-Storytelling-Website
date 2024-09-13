@@ -1,21 +1,29 @@
+let drawingCanvas;
+
 let img;
 let imgX, imgY;
+
 let dragging = false;
 let drawing = false;
 
 function preload() {
-  img = loadImage('Images/miso.png'); 
+  img = loadImage('Images/miso.png');
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  imgX = width / 2;
-  imgY = height / 2;
-  background(235, 220, 210); 
+  // create separate drawing canvas
+  drawingCanvas = createGraphics(windowWidth, windowHeight);
+  // init starting position of image
+  imgX = windowWidth / 2;
+  imgY = windowHeight / 2;
 }
 
 function draw() {
-  image(img, imgX, imgY);
+  // redraw background and canvases
+  background(235, 220, 210);
+  image(drawingCanvas, 0, 0);
+  image(img, imgX, imgY, 200, 200);
 }
 
 function mousePressed() {
@@ -28,12 +36,14 @@ function mousePressed() {
 
 function mouseDragged() {
   if (dragging) {
+    // update image positions
     imgX = mouseX - img.width / 2;
     imgY = mouseY - img.height / 2;
   } else if (drawing) {
-    stroke(0); 
-    strokeWeight(10); 
-    line(pmouseX, pmouseY, mouseX, mouseY); // Draw a line from the previous mouse position to the current mouse position
+    // draw stroke on drawing canvas
+    drawingCanvas.stroke(0);
+    drawingCanvas.strokeWeight(10);
+    drawingCanvas.line(pmouseX, pmouseY, mouseX, mouseY); // Draw a line from the previous mouse position to the current mouse position
   }
 }
 
