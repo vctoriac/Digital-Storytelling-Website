@@ -15,11 +15,11 @@ function setup() {
 
   // Create an upload button to add images
   let uploadButton = createFileInput(handleFile);
-  uploadButton.position(10, 10);
+  uploadButton.position(100, 60);
 
   // Add images 
-  addBackgroundImage("./images/book3.png", 0, 0);
-  addStickerImage("./images/pin.png", 100, 100);
+  addBackgroundImage("./images/book3.PNG", 30, -50);
+  addStickerImage("./images/pin.PNG", 100, 100);
   addStickerImage("./images/flower.png", 200, 200);
   addStickerImage("./images/austin.png", 300, 300);
 }
