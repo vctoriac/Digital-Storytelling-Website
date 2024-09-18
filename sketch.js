@@ -18,10 +18,10 @@ function setup() {
   uploadButton.position(100, 60);
 
   // Add images 
-  addBackgroundImage("./images/book3.PNG", 0, 0);
-  addStickerImage("./images/pin.PNG", 100, 100);
-  addStickerImage("./images/flower.png", 200, 200);
-  addStickerImage("./images/austin.png", 300, 300);
+  addBackgroundImage("./Images/book3.PNG", 0, 0);
+  addStickerImage("./Images/pin.PNG", 100, 100);
+  addStickerImage("./Images/flower.png", 200, 200);
+  addStickerImage("./Images/austin.png", 300, 300);
 }
 
 function draw() {
