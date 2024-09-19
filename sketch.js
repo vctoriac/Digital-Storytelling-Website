@@ -7,7 +7,7 @@ let currentImgObj;
 let dragging = false; 
 let drawing = false;  
 let fadeInProgress = true;
-let fadeInAlpha = 0;
+let fadeInSpeed = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight); // Create the main canvas
@@ -17,20 +17,24 @@ function setup() {
 
   // Create an upload button to add images
   let uploadButton = createFileInput(handleFile);
-  uploadButton.position(100, 60);
+  uploadButton.position(90, 540);
 
   // Add images 
-  addBackgroundImage("./Images/book1200.PNG", 450, 80);
+  addBackgroundImage("./Images/book1200.PNG", 450, 30);
   //addStickerImage("./Images/grid250.PNG", 1250, 450);
   //addStickerImage("./Images/stickynote170.PNG", 1250, 450);
   addStickerImage("./Images/pin65.png", 370, 560);
-  addStickerImage("./Images/flower100.PNG", 330, 250);
-  addStickerImage("./Images/stamp130.png", 300, 390);
-  addStickerImage("./Images/cat165.png", 290, 650);
+  addStickerImage("./Images/flower100.PNG", 240, 500);
+  addStickerImage("./Images/stamp130.png", 70, 550);
+  addStickerImage("./Images/cat165.png", 240, 630);
 }
 
 function draw() {
   background(235, 220, 210); // Set bg color
+
+  fill(42, 48, 135); // Set text color to navy blue
+  textSize(25); // Set text size
+  text('Click and drag on the\nstickers to decorate \nor on the notebook to draw.\n \nUpload your own images \nusing the "Choose File"\nbutton. The image must \nbe a .png or .jpg file and \nno larger than 360px by \n450px.\n \nHave fun!', 100, 60);
 
   // Draw all background images
   drawImages(backgroundImages);
@@ -53,14 +57,14 @@ function drawImages(images) {
 
 function drawFadingImages(images) {
   if (fadeInProgress) {
-    fadeInAlpha += 5; // Increase alpha value to create fade-in effect
-    if (fadeInAlpha >= 255) {
-      fadeInAlpha = 255;
+    fadeInSpeed += 3; // Decrease value to slow down fade-in effect
+    if (fadeInSpeed >= 255) {
+      fadeInSpeed = 255;
       fadeInProgress = false; // Stop fade-in effect when fully opaque
     }
   }
   for (const imgObj of images) {
-    tint(255, fadeInAlpha); // Apply transparency
+    tint(255, fadeInSpeed); // Apply transparency
     image(imgObj.img, imgObj.x, imgObj.y, imgObj.sizeX, imgObj.sizeY);
   }
   noTint(); // Reset tint
@@ -103,7 +107,7 @@ function mouseReleased() {
   drawing = false;  // Stop drawing
 }
 
-// Function to handle file uploads
+// Function for file uploads
 function handleFile(file) {
   if (file.type === 'image') {
     let img = createImg(file.data, ''); // Create an image element from the file data
@@ -139,6 +143,7 @@ function addImage(images, filePath, x = undefined, y = undefined, sizeX = undefi
   });
 }
 
+// Resize canvas when the window is resized
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   let newDrawingCanvas = createGraphics(windowWidth, windowHeight);
