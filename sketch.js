@@ -6,6 +6,8 @@ const stickerImages = [];
 let currentImgObj;  
 let dragging = false; 
 let drawing = false;  
+let fadeInProgress = true;
+let fadeInAlpha = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight); // Create the main canvas
@@ -18,10 +20,13 @@ function setup() {
   uploadButton.position(100, 60);
 
   // Add images 
-  addBackgroundImage("./Images/book3.PNG", 0, 0);
-  addStickerImage("./Images/pin.PNG", 100, 100);
-  addStickerImage("./Images/flower.png", 200, 200);
-  addStickerImage("./Images/austin.png", 300, 300);
+  addBackgroundImage("./Images/book1200.PNG", 450, 80);
+  //addStickerImage("./Images/grid250.PNG", 1250, 450);
+  //addStickerImage("./Images/stickynote170.PNG", 1250, 450);
+  addStickerImage("./Images/pin65.png", 370, 560);
+  addStickerImage("./Images/flower100.PNG", 330, 250);
+  addStickerImage("./Images/stamp130.png", 300, 390);
+  addStickerImage("./Images/cat165.png", 290, 650);
 }
 
 function draw() {
@@ -36,14 +41,29 @@ function draw() {
   // Draw the drawing canvas on top of the main canvas
   image(drawingCanvas, 0, 0);
 
-  // Draw all sticker images on top
-  drawImages(stickerImages);
+  // Draw all sticker images with fade-in effect
+  drawFadingImages(stickerImages);
 }
 
 function drawImages(images) {
   for (const imgObj of images) {
     image(imgObj.img, imgObj.x, imgObj.y, imgObj.sizeX, imgObj.sizeY);
   }
+}
+
+function drawFadingImages(images) {
+  if (fadeInProgress) {
+    fadeInAlpha += 5; // Increase alpha value to create fade-in effect
+    if (fadeInAlpha >= 255) {
+      fadeInAlpha = 255;
+      fadeInProgress = false; // Stop fade-in effect when fully opaque
+    }
+  }
+  for (const imgObj of images) {
+    tint(255, fadeInAlpha); // Apply transparency
+    image(imgObj.img, imgObj.x, imgObj.y, imgObj.sizeX, imgObj.sizeY);
+  }
+  noTint(); // Reset tint
 }
 
 function mousePressed() {
@@ -88,45 +108,40 @@ function handleFile(file) {
   if (file.type === 'image') {
     let img = createImg(file.data, ''); // Create an image element from the file data
     img.hide(); // Hide the HTML element
-    addUserImage(file.data); // Add the image to user images
+    addUserImage(file.data); // Add the image to the userImages array
   } else {
-    console.log('Not an image file!');
+    console.log('Not an image file!'); // Log a message if the file is not an image
   }
 }
 
-function addBackgroundImage(filePath, x, y, sizeX, sizeY) {
+function addBackgroundImage(filePath, x = 0, y = 0, sizeX = undefined, sizeY = undefined) {
   addImage(backgroundImages, filePath, x, y, sizeX, sizeY, false);
 }
 
-function addUserImage(filePath, x, y, sizeX, sizeY) {
+function addUserImage(filePath, x = undefined, y = undefined, sizeX = undefined, sizeY = undefined) {
   addImage(userImages, filePath, x, y, sizeX, sizeY, true);
 }
 
-function addStickerImage(filePath, x, y, sizeX, sizeY) {
+function addStickerImage(filePath, x = undefined, y = undefined, sizeX = undefined, sizeY = undefined) {
   addImage(stickerImages, filePath, x, y, sizeX, sizeY, true);
 }
 
-function addImage(images, filePath, x, y, sizeX, sizeY, movable = true) {
-  // Load the image and add it to the array of images
+function addImage(images, filePath, x = undefined, y = undefined, sizeX = undefined, sizeY = undefined, movable = true) {
   loadImage(filePath, img => {
-    const imgObj = {
-      img: img,
-      movable: movable,
-      x: x ?? windowWidth / 2, // Default to center if not provided
+    images.push({
+      img,
+      movable,
+      x: x ?? windowWidth / 2,
       y: y ?? windowHeight / 2,
-      sizeX: sizeX ?? img.width, // Default to image's original size if not provided
+      sizeX: sizeX ?? img.width,
       sizeY: sizeY ?? img.height
-    };
-    images.push(imgObj);
+    });
   });
 }
 
-// Handle window resizing
 function windowResized() {
-  // Create a new graphics canvas with the new window size
+  resizeCanvas(windowWidth, windowHeight);
   let newDrawingCanvas = createGraphics(windowWidth, windowHeight);
-  // Copy the old drawing canvas content to the new one
   newDrawingCanvas.image(drawingCanvas, 0, 0);
-  drawingCanvas = newDrawingCanvas; // Replace the old canvas
-  resizeCanvas(windowWidth, windowHeight); // Resize the main canvas
+  drawingCanvas = newDrawingCanvas;
 }
