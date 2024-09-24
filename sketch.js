@@ -31,7 +31,6 @@ function setup() {
 
 function draw() {
   background(235, 220, 210); // Set bg color
-
   fill(42, 48, 135); // Set text color to navy blue
   textSize(25); // Set text size
   text('Click and drag on the\nstickers to decorate \nor on the notebook to draw.\n \nUpload your own images \nusing the "Choose File"\nbutton. The image must \nbe a .png or .jpg file and \nno larger than 360px by \n450px.\n \nHave fun!', 100, 60);
@@ -40,13 +39,13 @@ function draw() {
   drawImages(backgroundImages);
 
   // Draw all user images
-  drawImages(userImages);
+drawImages(userImages);
 
-  // Draw the drawing canvas on top of the main canvas
-  image(drawingCanvas, 0, 0);
+// Draw the drawing canvas on top of the main canvas
+image(drawingCanvas, 0, 0);
 
-  // Draw all sticker images with fade-in effect
-  drawFadingImages(stickerImages);
+// Draw all sticker images with pulsing effect
+drawPulsingImages(stickerImages);
 }
 
 function drawImages(images) {
@@ -55,23 +54,21 @@ function drawImages(images) {
   }
 }
 
-function drawFadingImages(images) {
-  if (fadeInProgress) {
-    fadeInSpeed += 3; // Decrease value to slow down fade-in effect
-    if (fadeInSpeed >= 255) {
-      fadeInSpeed = 255;
-      fadeInProgress = false; // Stop fade-in effect when fully opaque
-    }
-  }
+function drawPulsingImages(images) {
+  let pulseSpeed = .002; // Speed of the pulsing effect
+  let pulseScale = 1 + 0.07 * sin(millis() * pulseSpeed); // Calculate the scale factor
+
   for (const imgObj of images) {
-    tint(255, fadeInSpeed); // Apply transparency
-    image(imgObj.img, imgObj.x, imgObj.y, imgObj.sizeX, imgObj.sizeY);
+    push(); // Save the current drawing state
+    translate(imgObj.x + imgObj.sizeX / 2, imgObj.y + imgObj.sizeY / 2); // Move to the center of the image
+    scale(pulseScale); // Apply the pulsing scale
+    image(imgObj.img, -imgObj.sizeX / 2, -imgObj.sizeY / 2, imgObj.sizeX, imgObj.sizeY); // Draw the image
+    pop(); // Restore the original drawing state
   }
-  noTint(); // Reset tint
 }
 
 function mousePressed() {
-  dragging = false; 
+  dragging = false;
 
   // Check if the mouse is over any image
   const images = userImages.concat(stickerImages);
